@@ -1,0 +1,33 @@
+import PyPDF2 as PyPDF2
+from PyPDF2 import PdfWriter, PdfReader
+import os 
+
+
+class PDFCombiner:
+    def __init__(self):
+        self.pdf_writer = PyPDF2.PdfWriter()
+
+    def combine_pdfs(self, file_names):
+        # Get the current working directory
+        current_dir = os.getcwd()
+        print(current_dir)
+        
+
+        for pdf_file in file_names:
+            # Dynamically join the current directory with the file name
+            file_path = os.path.join(current_dir, pdf_file)
+
+            # Check if the file exists in the directory
+            if os.path.exists(file_path):
+                print(f"Combining {file_path}...")
+                with open(file_path, 'rb') as f:
+                    reader = PyPDF2.PdfReader(f)
+                    for page in reader.pages:
+                        self.pdf_writer.add_page(page)
+            else:
+                print(f"File {pdf_file} not found in the current directory")
+
+        # Write the combined PDF to a new file
+        with open('combined_output.pdf', 'wb') as output_pdf:
+            self.pdf_writer.write(output_pdf)
+            print("Merged PDF created successfully as combined_output.pdf")
